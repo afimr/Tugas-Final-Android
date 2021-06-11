@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         viewmodel.getBarangs()?.observe(this, Observer {
             recylerView.adapter = MainAdapter(it, object : MainAdapter.Listener {
                 override fun onClick(barangEntity: BarangEntity) {
-                    tampilkanDialogUpdate()
+                    tampilkanDialogUpdate(barangEntity)
                 }
             })
         })
@@ -40,8 +40,41 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun tampilkanDialogUpdate() {
-        //
+    private fun tampilkanDialogUpdate(barangEntity: BarangEntity) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
+        val builder = this.let {
+            AlertDialog.Builder(it)
+                .setView(dialogView)
+        }
+        val mDialog = builder?.show()
+        with(dialogView) {
+            hapusBtn.visibility = View.VISIBLE
+            savebtn.text = "Update"
+            jenisinput.setText(barangEntity.jenis)
+            namainput.setText(barangEntity.nama)
+            hargainput.setText(barangEntity.harga.toString())
+
+            savebtn.setOnClickListener {
+                val jenis = jenisinput.text.toString()
+                val nama = namainput.text.toString()
+                val harga = hargainput.text.toString()
+                if( jenis != "" &&  nama != "" &&  harga != "") {
+                    viewmodel.updateBarang(
+                        BarangEntity(
+                            barangEntity.id, jenis, nama, harga.toLong()
+                        )
+                    )
+                    mDialog?.dismiss()
+                    Toast.makeText(this@MainActivity, "Barang Berhasil diubah", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Harap Mengisi Semua Kolom", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            hapusBtn.setOnClickListener {
+
+            }
+        }
     }
 
     private fun tampilkanDialog() {
