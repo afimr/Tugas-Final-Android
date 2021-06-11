@@ -72,7 +72,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             hapusBtn.setOnClickListener {
-
+                viewmodel.deleteBarang(barangEntity)
+                mDialog?.dismiss()
+                Toast.makeText(this@MainActivity, "Barang Berhasil dihapus", Toast.LENGTH_SHORT).show()
             }
         }
     }
