@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pendataan_barang.User.BarangEntity
 import com.example.pendataan_barang.User.UserViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,9 +23,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewmodel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        recylerView.setHasFixedSize(true)
+        recylerView.layoutManager = LinearLayoutManager(this)
+
+        viewmodel.getBarangs()?.observe(this, Observer {
+            recylerView.adapter = MainAdapter(it, object : MainAdapter.Listener {
+                override fun onClick(barangEntity: BarangEntity) {
+                    tampilkanDialogUpdate()
+                }
+            })
+        })
+
         addBtn.setOnClickListener {
             tampilkanDialog()
         }
+    }
+
+    private fun tampilkanDialogUpdate() {
+        //
     }
 
     private fun tampilkanDialog() {
